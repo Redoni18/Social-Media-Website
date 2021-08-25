@@ -1,0 +1,73 @@
+{% extends "blogi/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% for post in posts %}
+        <article class="media content-section">
+        <a  href="{% url 'post-detail' post.id %}">
+          <img class="rounded-circle article-img" src="{{ post.autori.profile.image.url }}">
+        </a>
+          <div class="media-body">
+            
+            <div class="article-metadata">
+              <a class="mr-2" href="{% url 'users-profile' post.autori.id %}">{{ post.autori }}</a>
+              <small class="text-muted">{{post.koha_posti|date:"F d, Y" }}</small>
+            </div>
+
+              {% if post.titulli %}
+                <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{post.titulli}}</a></h2>
+              {% endif %}
+              <a href="{% url 'post-detail' post.id %}" style="text-decoration: none;color: inherit;">
+                <p class="article-content">{{post.pershkrimi|urlize}}</p>
+            </a>
+              {% if post.foto %}
+                <a href="{% url 'post-detail' post.id %}" style="text-decoration: none;color: inherit;">
+                  <img src="{{ post.foto.url }}" style="width: 100%;height: 100%;max-width: 300px; max-height: 300px">
+                </a>
+              {% endif %}
+              {% if post.foto2 %}
+                <a href="{% url 'post-detail' post.id %}" style="text-decoration: none;color: inherit;">
+                  <img src="{{ post.foto2.url }}" style="width: 100%;height: 100%;max-width: 300px; max-height: 300px">
+                </a>
+              {% endif %}
+              {% if post.videofile %}
+                <video width='400' controls>
+                  <source src='{{ MEDIA_URL }}{{ post.videofile }}' type='video/mp4'>
+                  Your browser does not support the video tag.
+                </video>
+              {% endif %}
+              <div class="article-metadata">
+              <p class="card-title text-muted" style="font-weight: normal;margin:0;display:inline;float:left;"><a href="{% url 'get_likes' post.id %}"> Likes: {{ post.total_likes }}</a></p>
+              <p class="card-title text-muted" style="font-weight: normal;margin:0;display:inline;float:right;">Comments: {{ post.comment.count }}</p>
+            </div>
+          
+          </div>
+        <a href="{% url 'users-profile' post.autori.id %}"><button type="button" class="btn btn-primary btn-sm">Profile</button></a>
+        </article>
+
+
+    {% endfor %}
+
+{% if is_paginated %}
+
+        {% if page_obj.has_previous %}
+          <a class="btn btn-outline-info mb-4 btn-sm" href="?page=1">First</a>
+          <a class="btn btn-outline-info mb-4 btn-sm" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <a class="btn btn-info mb-4 btn-sm" href="?page={{ num }}">{{ num }}</a>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="btn btn-outline-info mb-4 btn-sm" href="?page={{ num }}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <a class="btn btn-outline-info mb-4 btn-sm" href="?page={{ page_obj.next_page_number }}">Next</a>
+          <a class="btn btn-outline-info mb-4 btn-sm" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+
+      {% endif %}
+
+
+{% endblock content %}

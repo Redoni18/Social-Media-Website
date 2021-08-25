@@ -1,0 +1,15 @@
+{% extends "blogi/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% for i in friends %}
+
+{% if user_id==3 %}
+<p>e ki follower</p>
+{% else %}
+<p>se ki</p>
+{% endif %}
+
+{% endfor %}
+
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "blogi/base.html" %}
+{% block content %}
+{% for obj in search %}
+<article class="media content-section">
+      <a  href="{% url 'post-detail' obj.id %}">
+          <img class="rounded-circle article-img" src="{{ obj.autori.profile.image.url }}">
+        </a>
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{% url 'users-profile' obj.autori.id %}">{{ obj.autori }}</a>
+              <small class="text-muted">{{obj.koha_posti|date:"F d, Y" }}</small>
+            </div>
+             {% if obj.titulli %}
+                <h2><a class="article-title" href="{% url 'post-detail' obj.id %}">{{obj.titulli}}</a></h2>
+              {% endif %}
+            <a href="{% url 'post-detail' obj.id %}" style="text-decoration: none;color: inherit;">
+                <p class="article-content">{{obj.pershkrimi|urlize}}</p>
+            </a>
+            {% if obj.foto %}
+              <a href="{% url 'post-detail' obj.id %}" style="text-decoration: none;color: inherit;">
+                  <img src="{{ obj.foto.url }}" style="width: 100%;height: 100%;max-width: 300px; max-height: 300px">
+                </a>
+            {% endif %}
+            {% if obj.foto2 %}
+                <a href="{% url 'post-detail' obj.id %}" style="text-decoration: none;color: inherit;">
+                  <img src="{{ obj.foto2.url }}" style="width: 100%;height: 100%;max-width: 300px; max-height: 300px">
+                </a>
+              {% endif %}
+              {% if obj.videofile %}
+                <video width='400' controls>
+                  <source src='{{ MEDIA_URL }}{{ obj.videofile }}' type='video/mp4'>
+                  Your browser does not support the video tag.
+                </video>
+              {% endif %}
+            <div class="article-metadata">
+              <p class="card-title text-muted" style="font-weight: normal;margin:0;display:inline;float:left;"><a href="{% url 'get_likes' obj.id %}"> Likes: {{ obj.total_likes }}</a></p>
+              <p class="card-title text-muted" style="font-weight: normal;margin:0;display:inline;float:right;">Comments: {{ obj.comment.count }}</p>
+            </div>
+          </div>
+        </article>
+
+{% endfor %}
+{% endblock content %}

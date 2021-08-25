@@ -1,0 +1,20 @@
+{% extends "blogi/base.html" %}
+{% block content %}
+
+<center>
+    <article class="mt-5 border border-primary rounded" style="width: 50%;">
+      <br>
+    <center>
+      <h2>You are loged out</h2>
+        <div class="border-top pt-3">
+          <small class="text-muted">
+            <a href="{% url 'login' %}">Login again</a>
+          </small>
+        </div>
+      </center>
+      <br>
+  </article>
+</center>
+
+
+{% endblock content %}

@@ -1,0 +1,15 @@
+{% extends "blogi/base.html" %}
+{% block content %}
+{% for friend in user_friends %}
+<article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{% url 'users-profile' friend.id %}">
+              <img class="rounded article-img" src="{{ friend.profile.image.url }}">
+              <h4>{{ friend.username }}</h4>
+            </a>
+            </div>
+
+        </article>
+{% endfor %}
+{% endblock content %}

@@ -1,0 +1,41 @@
+{% extends "blogi/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+      <div class="media">
+        <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
+        <div class="media-body">
+          <h2 class="account-heading">{{ user.username }}<a href="{% url 'user-posts' user.username %}"><button type="button" class="btn btn-primary btn-md ml-5">View Posts</button></a></h2>
+          <div class="container">
+            <h6>Your info</h6>
+            <ul class="list-group">
+              <li class="list-group-item" style="word-break: break-all;">Name: {{ user.profile.Name }}</li>
+              <li class="list-group-item" style="word-break: break-all;">Bio: {{ user.profile.Bio }}</li>
+              <li class="list-group-item">Born on: {{ user.profile.birth_date|date:"F d, Y"  }}</li>
+              <li class="list-group-item">Social status: {{ user.profile.statusi }}</li>
+              <li class="list-group-item">Email: {{ user.email }}</li>
+              <li class="list-group-item"><a href="{% url 'get_friends' user.profile.id %}" style="font-weight: normal;margin:0;display:inline;float:left;"> Following: {{ user.profile.total_friends }}</a>
+                <a href="{% url 'get_followers' user.profile.id %}" style="font-weight: normal;margin:0;display:inline;float:right;"> Followers: {{ user.profile.total_followers }}</a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+      
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <fieldset class="form-group">
+              <legend class="border-bottom mb-4">Profile Info</legend>
+              {{ user_form|crispy }}
+              {{ profile_form|crispy }}
+          </fieldset>
+          <div class="form-group">
+              <button class="btn btn-outline-info" type="submit">Update</button>
+              <small class="text-muted" style="margin-left: 72%;">
+                    <a href="{% url 'password_reset' %}">Change password!</a>
+                </small>
+          </div>
+      </form>
+{% endblock content %}

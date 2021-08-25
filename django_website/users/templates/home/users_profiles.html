@@ -1,0 +1,106 @@
+{% extends "blogi/base.html" %} {% load crispy_forms_tags %} {% block content %}
+{% for post in profilet %}
+
+<div class="content-section">
+  <div class="media">
+    <img
+      class="rounded-circle account-img"
+      src="{{ post.user.profile.image.url }}"
+    />
+    <div class="media-body">
+      <h2 class="account-heading">{{ post.user }}</h2>
+      <div class="container">
+        <h6>Your info</h6>
+        <ul class="list-group">
+          <li class="list-group-item" style="word-break: break-all">
+            Name: {{ post.user.profile.Name }}
+          </li>
+          <li class="list-group-item" style="word-break: break-all">
+            Bio: {{ post.user.profile.Bio }}
+          </li>
+          <li class="list-group-item">
+            Born on: {{ post.user.profile.birth_date|date:"F d, Y" }}
+          </li>
+          <li class="list-group-item">
+            Social status: {{ post.user.profile.statusi }}
+          </li>
+          <li class="list-group-item">Email: {{ post.user.email }}</li>
+
+          {% if is_friended or post.user == request.user %}
+          <li class="list-group-item">
+            <a
+              href="{% url 'get_friends' post.id %}"
+              style="
+                font-weight: normal;
+                margin: 0;
+                display: inline;
+                float: left;
+              "
+            >
+              Following: {{ post.user.profile.total_friends }}</a
+            >
+            <a
+              href="{% url 'get_followers' post.id %}"
+              style="
+                font-weight: normal;
+                margin: 0;
+                display: inline;
+                float: right;
+              "
+            >
+              Followers: {{ post.user.profile.total_followers }}</a
+            >
+          </li>
+
+          {% else %}
+          <li class="list-group-item">
+            <p
+              style="
+                font-weight: normal;
+                margin: 0;
+                display: inline;
+                float: left;
+              "
+            >
+              Following: {{ post.user.profile.total_friends }}
+            </p>
+            <p
+              style="
+                font-weight: normal;
+                margin: 0;
+                display: inline;
+                float: right;
+              "
+            >
+              Followers: {{ post.user.profile.total_followers }}
+            </p>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+    {% if is_friended %}
+    <a href="{% url 'user-posts' post.user.username %}"
+      ><button type="button" class="btn btn-primary btn-md">
+        View Posts
+      </button></a
+    >
+    {% endif %}
+  </div>
+  {% if post.user == request.user %}
+  <p>Current user</p>
+  {% else %}
+  <form action="{% url 'friends' post.id %}" method="POST">
+    {% csrf_token %} {% if is_friended %}
+    <button type="submit" name="action" value="friend" class="button remove">
+      Unfollow
+    </button>
+    {% else %}
+    <button type="submit" name="action" value="friend" class="button add">
+      Follow
+    </button>
+    {% endif %}
+  </form>
+  {% endif %}
+</div>
+{% endfor %} {% endblock content %}

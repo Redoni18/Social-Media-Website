@@ -1,0 +1,16 @@
+{% extends "blogi/base.html" %}
+{% block content %}
+{% for like in post_likes %}
+		<article class="media content-section">
+		    <div class="media-body">
+		    	<div class="article-metadata">
+		    		<a class="mr-2" href="{% url 'users-profile' like.id %}">
+		    			<img class="rounded article-img" src="{{ like.profile.image.url }}">
+		    			<h4>{{ like.username }}</h4>
+		    		</small>
+		    	</a>
+		    </div>
+		</article>
+
+{% endfor %}
+{% endblock content %}

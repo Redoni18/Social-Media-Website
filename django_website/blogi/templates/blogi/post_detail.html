@@ -1,0 +1,155 @@
+{% extends "blogi/base.html" %} {% load static %}
+<script src="{% static 'home/like.js' %}"></script>
+{% load crispy_forms_tags %} {% block content %}
+
+<article class="media content-section">
+  <a href="{% url 'users-profile' object.autori.id %}">
+    <img
+      class="rounded-circle article-img"
+      src="{{ object.autori.profile.image.url }}"
+    />
+  </a>
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="{% url 'users-profile' object.autori.id %}"
+        >{{ object.autori }}</a
+      >
+      <small class="text-muted">{{object.koha_posti|date:"F d, Y" }}</small>
+    </div>
+    {% if object.titulli %}
+    <h2><a class="article-title">{{object.titulli}}</a></h2>
+    {% endif %}
+    <p class="article-content">{{object.pershkrimi|urlize}}</p>
+    {% if object.foto %}
+    <img src="{{object.foto.url }}" style="width: 100%; height: 100%" />
+    {% endif %} {% if object.foto2 %}
+    <img
+      src="{{ object.foto2.url }}"
+      class="mt-3"
+      style="width: 100%; height: 100%"
+    />
+    {% endif %} {% if object.videofile %}
+    <video width="500" controls class="mt-3">
+      <source src="{{ MEDIA_URL }}{{ object.videofile }}" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    {% endif %}
+    <div class="article-metadata">
+      <p
+        class="card-title text-muted"
+        style="font-weight: normal; margin: 0; display: inline; float: left"
+      >
+        <a href="{% url 'get_likes' object.id %}">
+          Likes: {{ object.total_likes }}</a
+        >
+      </p>
+    </div>
+  </div>
+  {% if object.autori == request.user %}
+  <div class="btn-group">
+    <button
+      class="btn btn-secondary btn-sm dropdown-toggle ml-3"
+      type="button"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      ...
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="{% url 'update-post' object.id %}">Edit</a>
+      <a class="dropdown-item" href="{% url 'delete-post' object.id %}"
+        >Delete</a
+      >
+    </div>
+  </div>
+  {% endif %}
+</article>
+<form id="like_form" action="{% url 'likes' post.id %}" method="POST">
+  {% csrf_token %} {% if is_liked %}
+  <button
+    type="submit"
+    id="dislike"
+    name="action"
+    value="Like"
+    class="button dislike"
+  >
+    Dislike
+  </button>
+  {% else %}
+  <button
+    type="submit"
+    id="like"
+    name="action"
+    value="Like"
+    class="button like"
+  >
+    Like
+  </button>
+  {% endif %}
+</form>
+<br />
+<div class="con content-section bg-dark">
+  <a href="{% url 'create-comment' object.id %}" style="color: inherit">
+    <button type="submit" name="action" value="comment" class="button comment">
+      Leave a comment
+    </button></a
+  >
+  <fieldset class="form-group">
+    <legend class="border-bottom mb-4">
+      Total comments: {{post.comment.count}}
+    </legend>
+    {% for comment in post.comment.all %}
+    <article class="media content-section">
+      <a href="{% url 'users-profile' object.autori.id %}">
+        <img
+          class="rounded-circle article-img"
+          src="{{ comment.comment_autori.profile.image.url }}"
+        />
+      </a>
+      <div class="media-body">
+        <div class="article-metadata">
+          <a
+            class="mr-2"
+            href="{% url 'users-profile' comment.comment_autori.id %}"
+            >{{ comment.comment_autori }}</a
+          >
+          <small class="text-muted"
+            >{{object.koha_comment|date:"F d, Y" }}</small
+          >
+        </div>
+        <p class="cont article-content">{{comment.comment|urlize}}</p>
+        {% if comment.photo %}
+        <img
+          src="{{comment.photo.url }}"
+          style="width: 100%; height: 100%; max-width: 300px; max-height: 300px"
+        />
+        {% endif %}
+      </div>
+      {% if comment.comment_autori == request.user %}
+      <div class="btn-group">
+        <button
+          class="btn btn-secondary btn-sm dropdown-toggle ml-3"
+          type="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          ...
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'update-comment' comment.id %}"
+            >Edit</a
+          >
+          <a class="dropdown-item" href="{% url 'delete-comment' comment.id %}"
+            >Delete</a
+          >
+        </div>
+      </div>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </fieldset>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% extends "blogi/base.html" %}
+{% block content %}
+{% for followers in user_followers %}
+<article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{% url 'users-profile' followers.id %}">
+              <img class="rounded article-img" src="{{ followers.profile.image.url }}">
+              <h4>{{ followers.username }}</h4>
+              <form action="{% url 'remove' followers.id %}" method="POST">
+	            {% csrf_token %}
+	             <button type="submit" name="action" value="friend" class="button remove" >Remove fom followers</button>
+          	</form>
+            </a>
+            </div>
+
+        </article>
+{% endfor %}
+{% endblock content %}
